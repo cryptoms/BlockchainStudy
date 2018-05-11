@@ -1,61 +1,69 @@
-import React, { Component } from "react";
-import web3 from "./web3";
-import vote from "./vote";
-import Layout from "../components/Layout";
-import { Card, Button, Table, Header } from "semantic-ui-react";
-import RequestRow from "../components/RequestRow";
+import React, { Component } from 'react'
+import web3 from './web3'
+import vote from './vote'
+import Layout from '../components/Layout'
+import { Card, Button, Table, Header } from 'semantic-ui-react'
+import RequestRow from '../components/RequestRow'
 
 class VoteNextIndex extends Component {
-  //-----------------------------------------------------------
+  // -----------------------------------------------------------
   // getInitialProps
-  //-----------------------------------------------------------
-  static async getInitialProps() {
-    const owner = await vote.methods.owner().call();
+  // -----------------------------------------------------------
+  static async getInitialProps () {
+    const owner = await vote.methods.owner().call()
 
     const numberOfCandididates = await vote.methods
       .getNumberofCandidates()
-      .call();
+      .call()
 
     const candidates = await Promise.all(
       Array(parseInt(numberOfCandididates))
         .fill()
         .map((element, index) => {
-          return vote.methods.candidates(index).call();
+          return vote.methods.candidates(index).call()
         })
-    );
+    )
 
-    return { owner, candidates };
+    return { owner, candidates }
   }
 
-  //-----------------------------------------------------------
+  // -----------------------------------------------------------
+  // voteToCandidate - Vote using Web3 and call "campaigns/viewstatus.js"
+  // -----------------------------------------------------------
+  voteToCandidate = () => {
+    console.log('this is:', this);
+    
+  }
+
+  // -----------------------------------------------------------
   // renderCandidates - should be called with {this.renderCardCandidates()}
-  //-----------------------------------------------------------
-  renderCardCandidates() {
+  // -----------------------------------------------------------
+  renderCardCandidates () {
     const items = this.props.candidates.map(name => {
       return {
         header: name,
         description: name,
         fluid: false
-      };
-    });
+      }
+    })
 
-    return <Card.Group items={items} />;
+    return <Card.Group items={items} />
   }
 
-  //-----------------------------------------------------------
+  // -----------------------------------------------------------
   // renderRows
-  //-----------------------------------------------------------
-  renderRows() {
+  // -----------------------------------------------------------
+  renderRows () {
     return this.props.candidates.map((candidate, index) => {
-      return <RequestRow key={index} id={index} candidate={candidate} />;
-    });
+      return <RequestRow key={index} id={index} candidate={candidate} />
+    })
   }
 
-  //-----------------------------------------------------------
+  // -----------------------------------------------------------
   // render
-  //-----------------------------------------------------------
-  render() {
-    const { Header, Row, HeaderCell, Body } = Table;
+  // -----------------------------------------------------------
+  render () {
+    const { Header, Row, HeaderCell, Body } = Table
 
     return (
       <Layout>
@@ -73,10 +81,11 @@ class VoteNextIndex extends Component {
           </Header>
           <Body>{this.renderRows()}</Body>
         </Table>
-        <Button floated="right" content="Vote" icon="add circle" primary />
+        <Button onClick={this.voteToCandidate} floated='right' content='Vote' icon='add circle' primary />
+
       </Layout>
-    );
+    )
   }
 }
 
-export default VoteNextIndex;
+export default VoteNextIndex
